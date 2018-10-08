@@ -1,0 +1,3 @@
+[submodule "ChIRC"]
+	path = ChIRC
+	url = https://github.com/nullworks/ChIRC
