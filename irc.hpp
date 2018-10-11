@@ -8,9 +8,9 @@ class ircmanager
 {
     std::atomic_bool on;
     std::thread ircthread;
-    std::unique_ptr<ChIRC::ChIRC> irc;
     std::mutex guard;
 public:
+    std::unique_ptr<ChIRC::ChIRC> irc;
     void update()
     {
         while (on)

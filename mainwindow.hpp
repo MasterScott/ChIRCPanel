@@ -16,6 +16,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void addToStringList(QString user, QString msg);
 
 private slots:
     void on_sendMsg_clicked();
