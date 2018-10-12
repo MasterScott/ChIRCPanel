@@ -1,7 +1,9 @@
 #include "mainwindow.hpp"
-#include "ui_mainwindow.h"
+#include <ui_mainwindow.h>
 #include "irc.hpp"
-extern std::unique_ptr<MainWindow> w;
+#include <qmessagebox.h>
+#include <exception>
+
 void handleIRC(IRCMessage message, IRCClient *client);
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -17,17 +19,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::on_sendMsg_clicked()
-{
-    QString text = ui->lineEdit->text();
-    if (text.isEmpty())
-        return;
-    ui->lineEdit->clear();
-    manager.sendmsg(text.toStdString());
-
-    addToStringList(QString::fromStdString(manager.irc->getData().nick), text);
 }
 
 void handleIRC(IRCMessage message, IRCClient *client)
@@ -67,7 +58,38 @@ void MainWindow::addToStringList(QString user, QString msg)
     list.setStringList(stringlist);
 }
 
+void MainWindow::on_sendMsg_clicked()
+{
+    QString text = ui->lineEdit->text();
+    if (text.isEmpty())
+        return;
+    ui->lineEdit->clear();
+    manager.sendmsg(text.toStdString());
+
+    addToStringList(QString::fromStdString(manager.irc->getData().nick), text);
+}
+
 void MainWindow::on_lineEdit_returnPressed()
 {
     MainWindow::on_sendMsg_clicked();
+}
+
+void MainWindow::on_reconnectButton_clicked()
+{
+    std::string text = ui->addressField->text().toStdString();
+    std::string address = text.substr(0, text.find_last_of(':'));
+    int port;
+    try {
+        port = std::stoul(text.substr(text.find_last_of(':')+1));
+    } catch (std::invalid_argument) {
+        QMessageBox::warning(w.get(), "Error", "Port must be integer!");
+        return;
+    }
+    std::string channel = ui->channelField->text().toStdString();
+    std::string password = ui->passwordField->text().toStdString();
+    std::string user = ui->usernameField->text().toStdString();
+
+    manager.irc->Disconnect();
+    manager.irc->UpdateData(user, user, "#cat_comms", channel, password, address, port);
+    manager.irc->Connect();
 }

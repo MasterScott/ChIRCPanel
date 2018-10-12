@@ -25,6 +25,7 @@ public:
     ircmanager()
     {
         irc = std::make_unique<ChIRC::ChIRC>();
+
         irc->UpdateData("ChIRC-Pannel", "ChIRC-Pannel", "#cat_comms", "", "", "cathook.irc.inkcat.net", 8080);
         irc->Connect();
         ircthread = std::thread(&ircmanager::update, this);
