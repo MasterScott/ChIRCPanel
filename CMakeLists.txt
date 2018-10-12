@@ -1,14 +1,25 @@
-project(ChIRCPanel)
 cmake_minimum_required(VERSION 3.10)
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type")
+endif()
+set(CMAKE_BUILD_TYPE_VALUES "Release;Debug" CACHE INTERNAL "List of supported build")
+set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_BUILD_TYPE_VALUES})
+
+project(ChIRCPanel)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 find_package(Qt5Widgets REQUIRED)
-set(CMAKE_CXX_FLAGS "-pthread -g")
+set(CMAKE_CXX_FLAGS "-pthread")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELEASE "-Os")
+
 set(SOURCES main.cpp mainwindow.cpp irc.cpp)
 set(HEADERS mainwindow.hpp irc.hpp)
 set(UI mainwindow.ui)
+
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES} ${HEADERS} ${UI})
 target_link_libraries(${CMAKE_PROJECT_NAME} Qt5::Widgets)
 add_subdirectory(ChIRC)
