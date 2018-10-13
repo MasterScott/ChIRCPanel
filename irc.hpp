@@ -6,22 +6,12 @@
 
 class ircmanager
 {
-    std::atomic_bool on;
+    std::atomic_bool on{true};
     std::thread ircthread;
     std::mutex guard;
 public:
     std::unique_ptr<ChIRC::ChIRC> irc;
-    void update()
-    {
-        while (on)
-        {
-            std::this_thread::sleep_for(std::chrono_literals::operator""ms(200));
-            std::lock_guard<std::mutex> lock(guard);
-            if (!on)
-               return;
-            irc->Update();
-        }
-    }
+    void update();
     ircmanager()
     {
         irc = std::make_unique<ChIRC::ChIRC>();

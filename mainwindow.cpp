@@ -3,6 +3,7 @@
 #include "irc.hpp"
 #include <qmessagebox.h>
 #include <exception>
+#include "ChIRC/ucccccp/ucccccp.hpp"
 
 void handleIRC(IRCMessage message, IRCClient *client);
 
@@ -11,9 +12,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->msgList->setModel(&list);
+    ui->msgList->setModel(&msglist);
+    ui->botList->setModel(&botlist);
+    ui->msgList->setSelectionBehavior(QAbstractItemView::SelectColumns);
     manager.irc->installCallback("PRIVMSG", handleIRC);
-
 }
 
 MainWindow::~MainWindow()
@@ -53,9 +55,14 @@ void handleIRC(IRCMessage message, IRCClient *client)
 
 void MainWindow::addToStringList(QString user, QString msg)
 {
-    auto stringlist = list.stringList();
+    auto stringlist = msglist.stringList();
     stringlist.prepend(user + ": " + msg);
-    list.setStringList(stringlist);
+    msglist.setStringList(stringlist);
+}
+
+QStringListModel &MainWindow::getBotList()
+{
+    return botlist;
 }
 
 void MainWindow::on_sendMsg_clicked()
@@ -92,4 +99,12 @@ void MainWindow::on_reconnectButton_clicked()
     manager.irc->Disconnect();
     manager.irc->UpdateData(user, user, "#cat_comms", channel, password, address, port);
     manager.irc->Connect();
+}
+
+void MainWindow::on_cmdLineEdit_returnPressed()
+{
+    if (ui->sendallBox)
+        manager.irc->privmsg("cc_cmd" + ui->cmdLineEdit->text().toStdString(), true);
+    else
+        ;//Todo
 }
