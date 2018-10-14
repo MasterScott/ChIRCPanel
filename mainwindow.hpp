@@ -5,7 +5,8 @@
 #include <QStringListModel>
 #include <memory>
 
-namespace Ui {
+namespace Ui
+{
 class MainWindow;
 }
 

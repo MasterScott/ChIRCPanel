@@ -6,9 +6,10 @@
 
 class ircmanager
 {
-    std::atomic_bool on{true};
+    std::atomic_bool on{ true };
     std::thread ircthread;
     std::mutex guard;
+
 public:
     std::unique_ptr<ChIRC::ChIRC> irc;
     void update();
@@ -16,7 +17,8 @@ public:
     {
         irc = std::make_unique<ChIRC::ChIRC>();
 
-        irc->UpdateData("ChIRC-Pannel", "ChIRC-Pannel", "#cat_comms", "", "", "cathook.irc.inkcat.net", 8080);
+        irc->UpdateData("ChIRC-Pannel", "ChIRC-Pannel", "#cat_comms", "", "",
+                        "cathook.irc.inkcat.net", 8080);
         irc->Connect();
         ircthread = std::thread(&ircmanager::update, this);
     }

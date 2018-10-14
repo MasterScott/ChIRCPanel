@@ -15,7 +15,6 @@ int pseudohash(std::unordered_map<int, ChIRC::PeerData> &data)
     return hash;
 }
 
-
 void ircmanager::update()
 {
     while (on)
@@ -24,21 +23,22 @@ void ircmanager::update()
         std::lock_guard<std::mutex> lock(guard);
         if (!on)
             continue;
-            irc->Update();
+        irc->Update();
 
-            auto peers = irc->getPeers();
-            int hash = pseudohash(peers);
-            if (lasthash == hash)
-                continue;
-            lasthash = hash;
+        auto peers = irc->getPeers();
+        int hash   = pseudohash(peers);
+        if (lasthash == hash)
+            continue;
+        lasthash = hash;
 
-            QStringListModel &listobj = w->getBotList();
-            QStringList list;
+        QStringListModel &listobj = w->getBotList();
+        QStringList list;
 
-            for (auto &i : peers)
-            {
-                list.append(QString::fromStdString(std::to_string(i.first) + " " + i.second.nickname));
-            }
-            listobj.setStringList(list);
+        for (auto &i : peers)
+        {
+            list.append(QString::fromStdString(std::to_string(i.first) + " " +
+                                               i.second.nickname));
+        }
+        listobj.setStringList(list);
     }
 }
