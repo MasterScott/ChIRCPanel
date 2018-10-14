@@ -119,7 +119,6 @@ void MainWindow::on_cmdLineEdit_returnPressed()
             QMessageBox::warning(w.get(), "Error", "No bot selected.");
             return;
         }
-        std::cout << row << std::endl;
         int i  = 0;
         int id = -1;
         for (auto &j : manager.irc->getPeers())
