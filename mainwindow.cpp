@@ -103,8 +103,31 @@ void MainWindow::on_reconnectButton_clicked()
 
 void MainWindow::on_cmdLineEdit_returnPressed()
 {
-    if (ui->sendallBox)
-        manager.irc->privmsg("cc_cmd" + ui->cmdLineEdit->text().toStdString(), true);
+    if (ui->sendallBox->checkState())
+        manager.irc->privmsg("cc_cmd$cmd" + ui->cmdLineEdit->text().toStdString(), true);
     else
-        ;//Todo
+    {
+        QModelIndex index = ui->botList->currentIndex();
+        int columnid = index.column();
+        if (columnid == -1)
+        {
+            QMessageBox::warning(w.get(), "Error", "No bot selected.");
+            return;
+        }
+
+            int i = 0;
+            int id = -1;
+            for (auto &j : manager.irc->getPeers())
+            {
+                if (i == columnid)
+                    id = j.first;
+            }
+            if (id == -1)
+            {
+                QMessageBox::warning(w.get(), "Error", "Invalid selection. (This should never happen)");
+                return;
+            }
+            manager.irc->privmsg("cc_cmd$id" + std::to_string(id) + "$cmd" + ui->cmdLineEdit->text().toStdString(), true);
+    }
+    ui->cmdLineEdit->clear();
 }
