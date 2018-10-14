@@ -113,19 +113,20 @@ void MainWindow::on_cmdLineEdit_returnPressed()
     else
     {
         QModelIndex index = ui->botList->currentIndex();
-        int columnid      = index.column();
-        if (columnid == -1)
+        int row           = index.row();
+        if (row == -1)
         {
             QMessageBox::warning(w.get(), "Error", "No bot selected.");
             return;
         }
-
+        std::cout << row << std::endl;
         int i  = 0;
         int id = -1;
         for (auto &j : manager.irc->getPeers())
         {
-            if (i == columnid)
+            if (i == row)
                 id = j.first;
+            i++;
         }
         if (id == -1)
         {
