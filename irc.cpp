@@ -20,9 +20,9 @@ void ircmanager::update()
     while (on)
     {
         std::this_thread::sleep_for(std::chrono_literals::operator""ms(200));
-        std::lock_guard<std::mutex> lock(guard);
         if (!on)
             continue;
+        std::lock_guard<std::mutex> lock(guard);
         irc->Update();
 
         auto peers = irc->getPeers();
